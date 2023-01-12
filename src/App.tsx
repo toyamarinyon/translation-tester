@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { BoltIcon, PlayIcon } from "@heroicons/react/20/solid";
 
 function App() {
   const [sentence, setSentence] = useState("");
@@ -20,13 +20,56 @@ function App() {
         </div>
       </article>
       <section className="container mx-auto">
-        <form className="flex w-full">
-          <fieldset className="flex-1">
-            <textarea className="w-full"></textarea>
-          </fieldset>
-          <fieldset className="flex-1">
-            <textarea className="w-full"></textarea>
-          </fieldset>
+        <form className="w-full bg-neutral-800 rounded-md">
+          <header className="flex text-neutral-300 border-b border-b-neutral-700 py-2">
+            <h3 className="flex-1 px-4">English</h3>
+            <h3 className="flex-1 px-4">Japanese</h3>
+          </header>
+          <div className="flex divide-x divide-neutral-700 mt-2">
+            <fieldset className="flex-1 px-4">
+              <div className="relative">
+                <textarea
+                  className="w-full bg-transparent outline-none caret-neutral-300 text-neutral-300 resize-none py-2"
+                  rows={6}
+                  placeholder="Type or paste text you'll try to translate"
+                ></textarea>
+                <div className="absolute top-12 w-full text-neutral-300">
+                  <header className="mb-2">
+                    Or try with example sentences:
+                  </header>
+                  <div className="flex flex-wrap">
+                    <div className="p-1">
+                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
+                        <span>React(JavaScript Library)</span>
+                      </button>
+                    </div>
+                    <div className="p-1">
+                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
+                        <span>New Jeans(K-POP)</span>
+                      </button>
+                    </div>
+                    <div className="p-1">
+                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
+                        <span>DEATH STRANDING(Game)</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset className="flex-1 px-4">
+              <textarea
+                className="w-full bg-transparent outline-none caret-neutral-300 text-neutral-300 resize-none py-2"
+                rows={6}
+              ></textarea>
+            </fieldset>
+          </div>
+          <footer className="flex justify-end pr-2 pb-2">
+            <button className="px-2 py-1 text-sm flex items-center rounded space-x-1 text-white bg-green-600 disabled:bg-transparent disabled:text-neutral-700 ">
+              <PlayIcon className="h-4" />
+              <span>Test my translation</span>
+            </button>
+          </footer>
         </form>
       </section>
       {/* <div className="py-12 text-neutral-300">
