@@ -1,9 +1,40 @@
-import { useState } from "react";
-import { BoltIcon, PlayIcon } from "@heroicons/react/20/solid";
+import { PlayIcon } from "@heroicons/react/20/solid";
+import { useForm } from "./hooks/useForm";
+import { z } from "zod";
+import { TextArea } from "./components/TextArea";
+import { GhostButton } from "./components/Button";
+import { useCallback, useRef } from "react";
+
+const schema = z.object({
+  source: z.string(),
+  translation: z.string(),
+});
+
+const examples = [
+  {
+    name: "React(programing)",
+    text: "React is a JavaScript library for rendering user interfaces (UI). UI is built from small units like buttons, text, and images. React lets you combine them into reusable, nestable components. From web sites to phone apps, everything on the screen can be broken down into components.",
+  },
+  {
+    name: "DEATH STRANDING(Game)",
+    text: "Death Stranding on PC is the best version of a true masterpiece. The pace of the game is relaxed and the open world is immutable, so conquering it requires great effort and patience. This makes it boring for some players. But, for others, it will be tremendously rewarding because our steps, however small, have an impact on the game's world.",
+  },
+  {
+    name: "Badモード(Music)",
+    text: "Badモード, the album by Hikaru Utada, showcases many emotions far beyond mainstream pop's typical joy/melancholy dichotomy. They touch on self-discovery, sexual desire, and – as the album’s title suggests – downright moodiness and depression, giving their whole body, mind, and voice to each different tone."
+  }
+];
 
 function App() {
-  const [sentence, setSentence] = useState("");
-
+  const { controlProps, value, setValue } = useForm(schema);
+  const translationInputRef = useRef<HTMLTextAreaElement>(null);
+  const setExample = useCallback(
+    (example: string) => () => {
+      setValue("source", example);
+      translationInputRef.current?.focus();
+    },
+    [setValue]
+  );
   return (
     <>
       <article className="text-white py-12">
@@ -28,40 +59,36 @@ function App() {
           <div className="flex divide-x divide-neutral-700 mt-2">
             <fieldset className="flex-1 px-4">
               <div className="relative">
-                <textarea
-                  className="w-full bg-transparent outline-none caret-neutral-300 text-neutral-300 resize-none py-2"
-                  rows={6}
+                <TextArea
                   placeholder="Type or paste text you'll try to translate"
-                ></textarea>
-                <div className="absolute top-12 w-full text-neutral-300">
-                  <header className="mb-2">
-                    Or try with example sentences:
-                  </header>
-                  <div className="flex flex-wrap">
-                    <div className="p-1">
-                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
-                        <span>React(JavaScript Library)</span>
-                      </button>
-                    </div>
-                    <div className="p-1">
-                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
-                        <span>New Jeans(K-POP)</span>
-                      </button>
-                    </div>
-                    <div className="p-1">
-                      <button className="px-3 py-1 text-sm flex items-center rounded-full space-x-1 text-neutral-400 bg-transparent border border-neutral-500">
-                        <span>DEATH STRANDING(Game)</span>
-                      </button>
+                  {...controlProps("source")}
+                />
+                {value("source") === "" && (
+                  <div className="absolute top-12 w-full text-neutral-300">
+                    <header className="mb-2">
+                      Or try with example sentences:
+                    </header>
+                    <div className="flex flex-wrap">
+                      {examples.map(({ name, text }) => (
+                        <div className="p-1" key={name}>
+                          <GhostButton onClick={setExample(text)}>
+                            {name}
+                          </GhostButton>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </fieldset>
             <fieldset className="flex-1 px-4">
-              <textarea
-                className="w-full bg-transparent outline-none caret-neutral-300 text-neutral-300 resize-none py-2"
-                rows={6}
-              ></textarea>
+              <TextArea
+                placeholder={
+                  value("source") === "" ? "" : "Type translation text"
+                }
+                ref={translationInputRef}
+                {...controlProps("translation")}
+              />
             </fieldset>
           </div>
           <footer className="flex justify-end pr-2 pb-2">
@@ -72,21 +99,6 @@ function App() {
           </footer>
         </form>
       </section>
-      {/* <div className="py-12 text-neutral-300">
-        <div className="container mx-auto">
-          <textarea
-            className="bg-transparent focus:outline-none w-full"
-            rows={5}
-            value={sentence}
-            placeholder="読むのに苦労したり読めなかった英文を入力してください"
-            onChange={(e) => setSentence(e.target.value)}
-          ></textarea>
-          <button className="px-4 py-2 flex rounded-full">
-            <span>送信</span>
-            <ChevronRightIcon className="w-6 h-6" />
-          </button>
-        </div>
-      </div> */}
     </>
   );
 }
