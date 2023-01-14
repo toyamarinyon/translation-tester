@@ -4,6 +4,7 @@ import { z } from "zod";
 import { TextArea } from "./components/TextArea";
 import { GhostButton } from "./components/Button";
 import { useCallback, useRef } from "react";
+import { trpc } from "./trpc";
 
 const schema = z.object({
   source: z.string(),
@@ -21,12 +22,18 @@ const examples = [
   },
   {
     name: "Badモード(Music)",
-    text: "Badモード, the album by Hikaru Utada, showcases many emotions far beyond mainstream pop's typical joy/melancholy dichotomy. They touch on self-discovery, sexual desire, and – as the album’s title suggests – downright moodiness and depression, giving their whole body, mind, and voice to each different tone."
-  }
+    text: "Badモード, the album by Hikaru Utada, showcases many emotions far beyond mainstream pop's typical joy/melancholy dichotomy. They touch on self-discovery, sexual desire, and – as the album’s title suggests – downright moodiness and depression, giving their whole body, mind, and voice to each different tone.",
+  },
 ];
 
 function App() {
-  const { controlProps, value, setValue } = useForm(schema);
+  const translateScoring = trpc.translateScoring.useMutation();
+  const { controlProps, value, setValue, handleSubmit, submitting } = useForm(
+    schema,
+    async (data) => {
+      await translateScoring.mutateAsync(data);
+    }
+  );
   const translationInputRef = useRef<HTMLTextAreaElement>(null);
   const setExample = useCallback(
     (example: string) => () => {
@@ -51,7 +58,10 @@ function App() {
         </div>
       </article>
       <section className="container mx-auto">
-        <form className="w-full bg-neutral-800 rounded-md">
+        <form
+          className="w-full bg-neutral-800 rounded-md"
+          onSubmit={handleSubmit}
+        >
           <header className="flex text-neutral-300 border-b border-b-neutral-700 py-2">
             <h3 className="flex-1 px-4">English</h3>
             <h3 className="flex-1 px-4">Japanese</h3>
@@ -92,7 +102,10 @@ function App() {
             </fieldset>
           </div>
           <footer className="flex justify-end pr-2 pb-2">
-            <button className="px-2 py-1 text-sm flex items-center rounded space-x-1 text-white bg-green-600 disabled:bg-transparent disabled:text-neutral-700 ">
+            <button
+              className="px-2 py-1 text-sm flex items-center rounded space-x-1 text-white bg-green-600 disabled:bg-transparent disabled:text-neutral-700"
+              disabled={submitting}
+            >
               <PlayIcon className="h-4" />
               <span>Test my translation</span>
             </button>
