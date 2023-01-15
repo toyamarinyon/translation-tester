@@ -1,10 +1,11 @@
-import { PlayIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon, PlayIcon } from "@heroicons/react/20/solid";
 import { useForm } from "./hooks/useForm";
 import { z } from "zod";
 import { TextArea } from "./components/TextArea";
-import { GhostButton } from "./components/Button";
-import { useCallback, useRef } from "react";
-import { trpc } from "./trpc";
+import { Button, GhostButton } from "./components/Button";
+import { useCallback, useRef, useState } from "react";
+import { RouterOutput, trpc } from "./trpc";
+import { Result } from "./components/Result";
 
 const schema = z.object({
   source: z.string(),
@@ -28,10 +29,11 @@ const examples = [
 
 function App() {
   const translateScoring = trpc.translateScoring.useMutation();
+  const [result, setResult] = useState<RouterOutput["translateScoring"]>();
   const { controlProps, value, setValue, handleSubmit, submitting } = useForm(
     schema,
     async (data) => {
-      await translateScoring.mutateAsync(data);
+      setResult(await translateScoring.mutateAsync(data));
     }
   );
   const translationInputRef = useRef<HTMLTextAreaElement>(null);
@@ -42,6 +44,11 @@ function App() {
     },
     [setValue]
   );
+  const reset = useCallback(() => {
+    setResult(undefined);
+    setValue("source", "");
+    setValue("translation", "");
+  }, []);
   return (
     <>
       <article className="text-white py-12">
@@ -66,7 +73,7 @@ function App() {
             <h3 className="flex-1 px-4">English</h3>
             <h3 className="flex-1 px-4">Japanese</h3>
           </header>
-          <div className="flex divide-x divide-neutral-700 mt-2">
+          <div className="flex divide-x divide-neutral-700 py-2">
             <fieldset className="flex-1 px-4">
               <div className="relative">
                 <TextArea
@@ -91,25 +98,50 @@ function App() {
                 )}
               </div>
             </fieldset>
-            <fieldset className="flex-1 px-4">
-              <TextArea
-                placeholder={
-                  value("source") === "" ? "" : "Type translation text"
-                }
-                ref={translationInputRef}
-                {...controlProps("translation")}
-              />
-            </fieldset>
+            {result ? (
+              <div className="flex-1 px-4">
+                <div className="w-full bg-transparent text-neutral-300 py-2">
+                  {value("translation")
+                    .split(/\s+/)
+                    .map((line, i) => (
+                      <p key={`translation-${i}`}>{line}</p>
+                    ))}
+                </div>
+                <Result />
+                <footer className="flex justify-end mb-2">
+                  <Button
+                    leftIcon={<ArrowPathIcon className="h-4" />}
+                    onClick={reset}
+                  >
+                    Try another translation
+                  </Button>
+                </footer>
+              </div>
+            ) : (
+              <div className="flex-1 px-4">
+                <div className="">
+                  <fieldset>
+                    <TextArea
+                      placeholder={
+                        value("source") === "" ? "" : "Type translation text"
+                      }
+                      ref={translationInputRef}
+                      {...controlProps("translation")}
+                    />
+                  </fieldset>
+                  <footer className="flex justify-end mb-2">
+                    <Button
+                      type="submit"
+                      leftIcon={<PlayIcon className="h-4" />}
+                      loading={submitting}
+                    >
+                      Test my translation
+                    </Button>
+                  </footer>
+                </div>
+              </div>
+            )}
           </div>
-          <footer className="flex justify-end pr-2 pb-2">
-            <button
-              className="px-2 py-1 text-sm flex items-center rounded space-x-1 text-white bg-green-600 disabled:bg-transparent disabled:text-neutral-700"
-              disabled={submitting}
-            >
-              <PlayIcon className="h-4" />
-              <span>Test my translation</span>
-            </button>
-          </footer>
         </form>
       </section>
     </>

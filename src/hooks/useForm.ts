@@ -77,7 +77,8 @@ export const useForm = <Z extends AnyZodObject>(
   );
 
   const handleSubmit = useCallback(
-    () => async (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      console.log("hello?");
       e.preventDefault();
       const result = scheme.safeParse(state);
       if (result.success) {
