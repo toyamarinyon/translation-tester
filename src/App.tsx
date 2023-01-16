@@ -48,7 +48,7 @@ function App() {
     setResult(undefined);
     setValue("source", "");
     setValue("translation", "");
-  }, []);
+  }, [setValue]);
   return (
     <>
       <article className="text-white py-12">
@@ -102,12 +102,16 @@ function App() {
               <div className="flex-1 px-4">
                 <div className="w-full bg-transparent text-neutral-300 py-2">
                   {value("translation")
-                    .split(/\s+/)
+                    .split(/\n+/)
                     .map((line, i) => (
                       <p key={`translation-${i}`}>{line}</p>
                     ))}
                 </div>
-                <Result />
+                <Result
+                  score={result.score}
+                  message={result.comment}
+                  example={result.exampleTranslation}
+                />
                 <footer className="flex justify-end mb-2">
                   <Button
                     leftIcon={<ArrowPathIcon className="h-4" />}

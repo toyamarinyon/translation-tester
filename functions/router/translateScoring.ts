@@ -9,32 +9,13 @@ export const translateScoring = t.procedure
     })
   )
   .mutation(async () => {
-    await new Promise((r) => setTimeout(r, 1000))
+    await new Promise((r) => setTimeout(r, 1000));
     return {
+      score: 2,
       comment:
-        "訳文は、ほとんど正しいと思われます。`One thing I've observed is`の訳文には、`observe`（観察する）が`observe`（オブザーブする）という間違いがありますが、それ以外は、ほぼ正しいと思われます。",
-      wrongWords: ["observe"],
-      results: [
-        {
-          from: "One thing I've observed is",
-          answer: "私が観察したことの一つは",
-          score: 9,
-        },
-        {
-          from: "people tend to struggle with the useEffect hook",
-          answer: "人々はuseEffectフックを使うことで苦戦する傾向がある",
-          score: 9,
-        },
-        {
-          from: "and there are some common hang-ups for them",
-          answer: "そのためによくあるトラブルがある",
-          score: 10,
-        },
-        {
-          from: "that I'd like to address here.",
-          answer: "それらをここで取り上げたいと思います。",
-          score: 10,
-        },
-      ],
+        "訳文は大部分が正しいと思われますが、「ゲームのペースはゆったりで、オープンワールドは変化しないので、暇なプレイヤーもいるかもしれませんが、そうじゃないユーザーにとっては、とてもいいものです。」という箇所が原文の意味を誤り、不明瞭に訳されています。",
+      wrongWords: [],
+      exampleTranslation:
+        "Death StrandingのPCバージョンは本当に傑作です。ゲームのペースはリラックスしており、オープンワールドは不変であるため、それを制覇するためには大変な努力や忍耐が必要です。これは一部のプレイヤーには退屈に感じるかもしれませんが、他の人にとっては大きな報酬になるでしょう。なぜなら、私たちの足跡は、小さなものであってもゲームの世界に影響を与えるからです。",
     };
   });

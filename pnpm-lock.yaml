@@ -13,6 +13,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.48.1
   '@vitejs/plugin-react': ^3.0.0
   autoprefixer: ^10.4.13
+  classnames: ^2.3.2
   cloudflare-pages-plugin-trpc: ^0.2.2
   eslint: ^8.31.0
   eslint-plugin-react-hooks: ^4.6.0
@@ -31,6 +32,7 @@ dependencies:
   '@trpc/client': 10.9.0_@trpc+server@10.9.0
   '@trpc/react-query': 10.9.0_qw4miir7nnxijwjta54q3esyeq
   '@trpc/server': 10.9.0
+  classnames: 2.3.2
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   zod: 3.20.2
@@ -1222,6 +1224,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /cloudflare-pages-plugin-trpc/0.2.2_@trpc+server@10.9.0:
     resolution: {integrity: sha512-0Imex/i6Cs2r94aAJIeyJA8omcyTmLVRWf1lrB1J57TXUWIA6NeixKSHZlxWi3iOVmBtZKGS6BkBgSf8WCBtvw==}
