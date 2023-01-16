@@ -41,7 +41,10 @@ const ResultBadge = ({ score }: Pick<Props, "score">): JSX.Element => {
         ))}
       </div>
       <span className="text-xs bg-yellow-300 text-yellow-800 px-2 rounded-full">
-        Congrats!
+        {score === 3 && "Perfect!"}
+        {score === 2 && "Nice!"}
+        {score === 1 && "Good!"}
+        {score === 0 && "Fight!"}
       </span>
     </section>
   );
