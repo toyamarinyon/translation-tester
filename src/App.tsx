@@ -30,12 +30,10 @@ const examples = [
 function App() {
   const translateScoring = trpc.translateScoring.useMutation();
   const [result, setResult] = useState<RouterOutput["translateScoring"]>();
-  const { controlProps, value, setValue, handleSubmit, submitting } = useForm(
-    schema,
-    async (data) => {
+  const { controlProps, value, setValue, handleSubmit, submitting } =
+    useForm(schema, async (data) => {
       setResult(await translateScoring.mutateAsync(data));
-    }
-  );
+    });
   const translationInputRef = useRef<HTMLTextAreaElement>(null);
   const setExample = useCallback(
     (example: string) => () => {
@@ -80,6 +78,13 @@ function App() {
                   placeholder="Type or paste text you'll try to translate"
                   {...controlProps("source")}
                 />
+                <section className="text-neutral-500 flex justify-end">
+                  <ul className="flex space-x-1">
+                    <li>{value("source").length}</li>
+                    <li>/</li>
+                    <li>400</li>
+                  </ul>
+                </section>
                 {value("source") === "" && (
                   <div className="absolute top-12 w-full text-neutral-300">
                     <header className="mb-2">
@@ -113,7 +118,7 @@ function App() {
                   example={result.example}
                   misses={result.misses}
                 />
-                <footer className="flex justify-end mb-2">
+                <footer className="flex justify-end mb-2 items-center">
                   <Button
                     leftIcon={<ArrowPathIcon className="h-4" />}
                     onClick={reset}
@@ -134,7 +139,12 @@ function App() {
                       {...controlProps("translation")}
                     />
                   </fieldset>
-                  <footer className="flex justify-end mb-2">
+                  <footer className="flex justify-end mb-2 text-neutral-500 space-x-3">
+                    <ul className="flex space-x-1">
+                      <li>{value("translation").length}</li>
+                      <li>/</li>
+                      <li>400</li>
+                    </ul>
                     <Button
                       type="submit"
                       leftIcon={<PlayIcon className="h-4" />}

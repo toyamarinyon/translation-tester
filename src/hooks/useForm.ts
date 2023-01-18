@@ -19,7 +19,7 @@ function createReducer<Z extends AnyZodObject>(scheme: Z) {
     if (action.type === FormActionKind.Change) {
       return {
         ...state,
-        [action.payload.name]: action.payload.value,
+        [action.payload.name]: action.payload.value.substring(0, 400),
       };
     }
     return {
