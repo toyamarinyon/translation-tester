@@ -1,14 +1,11 @@
 import { inferAsyncReturnType, initTRPC } from "@trpc/server";
 import { FetchCreateContextWithCloudflareEnvFnOptions } from "cloudflare-pages-plugin-trpc";
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "./openai";
 
-const createContext = async ({
+export const createContext = async ({
   env,
 }: FetchCreateContextWithCloudflareEnvFnOptions<Env>) => {
-  const configuration = new Configuration({
-    apiKey: env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
+  const openai = new OpenAI(env.OPENAI_APIKEY)
   return {
     openai,
   };

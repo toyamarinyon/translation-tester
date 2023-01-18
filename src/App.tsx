@@ -109,8 +109,8 @@ function App() {
                 </div>
                 <Result
                   score={result.score}
-                  message={result.comment}
-                  example={result.exampleTranslation}
+                  message={result.summary}
+                  example={result.example}
                 />
                 <footer className="flex justify-end mb-2">
                   <Button
