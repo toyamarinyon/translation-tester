@@ -8,14 +8,6 @@ export class OpenAI {
   async createCompletion(
     params: CreateCompletionRequest
   ): Promise<CreateCompletionResponse> {
-    console.log(
-      JSON.stringify({
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer: ${this.apiKey}`,
-        },
-      })
-    );
     const response = await fetch("https://api.openai.com/v1/completions", {
       method: "POST",
       headers: {

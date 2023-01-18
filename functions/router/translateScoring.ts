@@ -17,7 +17,25 @@ export const translateScoring = t.procedure
     })
   )
   .mutation(async ({ input, ctx }) => {
-    console.log(ctx.openai);
+    if (ctx.mock) {
+      return {
+        score: 3,
+        summary: "翻訳は正しいです",
+        misses: [
+          {
+            word: "strikes",
+            reason:
+              "strikes（打ち込む）」を「seems（見える）」に修正しましょう",
+          },
+          {
+            word: "actually",
+            reason:
+              "「actually（実際）」を「basically（基本的に）」に修正しましょう",
+          },
+        ],
+        example: "翻訳は正しいです",
+      };
+    }
     const prompt = `
     I want you to act as a translation evaluation API.
     I will provide some translations from English to Japanese, and it will be your job to check whether they are correct or incorrect and respond as a JSON Object, which are four fields.
@@ -48,7 +66,7 @@ export const translateScoring = t.procedure
     console.log(JSON.stringify(result, null, 2));
 
     if (result.choices[0] == null || result.choices[0].text == null) {
-      throw TRPCError
+      throw TRPCError;
     }
     const safeResult = translateScoringCompletionScheme.parse(
       JSON.parse(result.choices[0].text)

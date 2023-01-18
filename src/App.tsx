@@ -111,6 +111,7 @@ function App() {
                   score={result.score}
                   message={result.summary}
                   example={result.example}
+                  misses={result.misses}
                 />
                 <footer className="flex justify-end mb-2">
                   <Button

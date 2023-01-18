@@ -1,12 +1,22 @@
 import { StarIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 
+interface Mistake {
+  word: string;
+  reason: string;
+}
 interface Props {
   score: number;
   message: string;
   example: string;
+  misses: Mistake[];
 }
-export const Result = ({ score, message, example }: Props): JSX.Element => {
+export const Result = ({
+  score,
+  message,
+  example,
+  misses,
+}: Props): JSX.Element => {
   return (
     <div className="rounded-md bg-neutral-700 text-white mb-3">
       <header className="text-neutral-300 border-b border-b-neutral-600 py-1">
@@ -16,6 +26,15 @@ export const Result = ({ score, message, example }: Props): JSX.Element => {
         <ResultBadge score={score} />
         <div className="divide-y divide-neutral-600">
           <p className="text-md pb-2">{message}</p>
+          <section className="py-2">
+            <header>修正箇所:</header>
+            <ul></ul>
+            {misses.map(({ word, reason }, i) => (
+              <li key={`miss-${i}`}>
+                {word}: {reason}
+              </li>
+            ))}
+          </section>
           <article className="py-2">
             <header>訳例:</header>
             <p className="italic">{example} </p>
