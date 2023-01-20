@@ -28,7 +28,6 @@ const examples = [
 ];
 
 function App() {
-  trpc.timeOutTest.useQuery();
   const translateScoring = trpc.translateScoring.useMutation();
   const [result, setResult] = useState<RouterOutput["translateScoring"]>();
   const { controlProps, value, setValue, handleSubmit, submitting } =
