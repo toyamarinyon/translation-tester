@@ -26,15 +26,17 @@ export const Result = ({
         <ResultBadge score={score} />
         <div className="divide-y divide-neutral-600">
           <p className="text-md pb-2">{message}</p>
-          <section className="py-2">
-            <header>修正箇所:</header>
-            <ul></ul>
-            {misses.map(({ word, reason }, i) => (
-              <li key={`miss-${i}`}>
-                {word}: {reason}
-              </li>
-            ))}
-          </section>
+          {misses.length > 0 && (
+            <section className="py-2">
+              <header>修正箇所:</header>
+              <ul></ul>
+              {misses.map(({ word, reason }, i) => (
+                <li key={`miss-${i}`}>
+                  {word}: {reason}
+                </li>
+              ))}
+            </section>
+          )}
           <article className="py-2">
             <header>訳例:</header>
             <p className="italic">{example} </p>
