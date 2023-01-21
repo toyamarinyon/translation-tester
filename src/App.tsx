@@ -1,9 +1,11 @@
-import { PlayIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon, PlayIcon } from "@heroicons/react/20/solid";
 import { useForm } from "./hooks/useForm";
 import { z } from "zod";
 import { TextArea } from "./components/TextArea";
-import { GhostButton } from "./components/Button";
-import { useCallback, useRef } from "react";
+import { Button, GhostButton } from "./components/Button";
+import { useCallback, useRef, useState } from "react";
+import { RouterOutput, trpc } from "./trpc";
+import { Result } from "./components/Result";
 
 const schema = z.object({
   source: z.string(),
@@ -21,12 +23,17 @@ const examples = [
   },
   {
     name: "Badモード(Music)",
-    text: "Badモード, the album by Hikaru Utada, showcases many emotions far beyond mainstream pop's typical joy/melancholy dichotomy. They touch on self-discovery, sexual desire, and – as the album’s title suggests – downright moodiness and depression, giving their whole body, mind, and voice to each different tone."
-  }
+    text: "Badモード, the album by Hikaru Utada, showcases many emotions far beyond mainstream pop's typical joy/melancholy dichotomy. They touch on self-discovery, sexual desire, and – as the album’s title suggests – downright moodiness and depression, giving their whole body, mind, and voice to each different tone.",
+  },
 ];
 
 function App() {
-  const { controlProps, value, setValue } = useForm(schema);
+  const translateScoring = trpc.translateScoring.useMutation();
+  const [result, setResult] = useState<RouterOutput["translateScoring"]>();
+  const { controlProps, value, setValue, handleSubmit, submitting } =
+    useForm(schema, async (data) => {
+      setResult(await translateScoring.mutateAsync(data));
+    });
   const translationInputRef = useRef<HTMLTextAreaElement>(null);
   const setExample = useCallback(
     (example: string) => () => {
@@ -35,6 +42,11 @@ function App() {
     },
     [setValue]
   );
+  const reset = useCallback(() => {
+    setResult(undefined);
+    setValue("source", "");
+    setValue("translation", "");
+  }, [setValue]);
   return (
     <>
       <article className="text-white py-12">
@@ -44,25 +56,35 @@ function App() {
               <h1 className="text-yellow-300 text-4xl font-serif leading-none">
                 Translation tester
               </h1>
-              <h2 className="leading-none mr-1">powered by GPT-3</h2>
+              <h2 className="leading-none mr-1">powered by OpenAI</h2>
             </div>
           </header>
           <p className="text text-neutral-200"></p>
         </div>
       </article>
       <section className="container mx-auto">
-        <form className="w-full bg-neutral-800 rounded-md">
+        <form
+          className="w-full bg-neutral-800 rounded-md"
+          onSubmit={handleSubmit}
+        >
           <header className="flex text-neutral-300 border-b border-b-neutral-700 py-2">
             <h3 className="flex-1 px-4">English</h3>
             <h3 className="flex-1 px-4">Japanese</h3>
           </header>
-          <div className="flex divide-x divide-neutral-700 mt-2">
+          <div className="flex divide-x divide-neutral-700 py-2">
             <fieldset className="flex-1 px-4">
               <div className="relative">
                 <TextArea
                   placeholder="Type or paste text you'll try to translate"
                   {...controlProps("source")}
                 />
+                <section className="text-neutral-500 flex justify-end">
+                  <ul className="flex space-x-1">
+                    <li>{value("source").length}</li>
+                    <li>/</li>
+                    <li>400</li>
+                  </ul>
+                </section>
                 {value("source") === "" && (
                   <div className="absolute top-12 w-full text-neutral-300">
                     <header className="mb-2">
@@ -81,22 +103,60 @@ function App() {
                 )}
               </div>
             </fieldset>
-            <fieldset className="flex-1 px-4">
-              <TextArea
-                placeholder={
-                  value("source") === "" ? "" : "Type translation text"
-                }
-                ref={translationInputRef}
-                {...controlProps("translation")}
-              />
-            </fieldset>
+            {result ? (
+              <div className="flex-1 px-4">
+                <div className="w-full bg-transparent text-neutral-300 py-2">
+                  {value("translation")
+                    .split(/\n+/)
+                    .map((line, i) => (
+                      <p key={`translation-${i}`}>{line}</p>
+                    ))}
+                </div>
+                <Result
+                  score={result.score}
+                  message={result.summary}
+                  example={result.example}
+                  misses={result.misses}
+                />
+                <footer className="flex justify-end mb-2 items-center">
+                  <Button
+                    leftIcon={<ArrowPathIcon className="h-4" />}
+                    onClick={reset}
+                  >
+                    Try another translation
+                  </Button>
+                </footer>
+              </div>
+            ) : (
+              <div className="flex-1 px-4">
+                <div className="">
+                  <fieldset>
+                    <TextArea
+                      placeholder={
+                        value("source") === "" ? "" : "Type translation text"
+                      }
+                      ref={translationInputRef}
+                      {...controlProps("translation")}
+                    />
+                  </fieldset>
+                  <footer className="flex justify-end mb-2 text-neutral-500 space-x-3">
+                    <ul className="flex space-x-1">
+                      <li>{value("translation").length}</li>
+                      <li>/</li>
+                      <li>400</li>
+                    </ul>
+                    <Button
+                      type="submit"
+                      leftIcon={<PlayIcon className="h-4" />}
+                      loading={submitting}
+                    >
+                      Test my translation
+                    </Button>
+                  </footer>
+                </div>
+              </div>
+            )}
           </div>
-          <footer className="flex justify-end pr-2 pb-2">
-            <button className="px-2 py-1 text-sm flex items-center rounded space-x-1 text-white bg-green-600 disabled:bg-transparent disabled:text-neutral-700 ">
-              <PlayIcon className="h-4" />
-              <span>Test my translation</span>
-            </button>
-          </footer>
         </form>
       </section>
     </>

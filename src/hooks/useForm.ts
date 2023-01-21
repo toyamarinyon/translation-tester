@@ -13,12 +13,13 @@ interface FormAction {
   type: FormActionKind;
   payload: FormChangeEventPayload;
 }
+
 function createReducer<Z extends AnyZodObject>(scheme: Z) {
   return function reducer(state: z.infer<typeof scheme>, action: FormAction) {
     if (action.type === FormActionKind.Change) {
       return {
         ...state,
-        [action.payload.name]: action.payload.value,
+        [action.payload.name]: action.payload.value.substring(0, 400),
       };
     }
     return {
@@ -26,8 +27,12 @@ function createReducer<Z extends AnyZodObject>(scheme: Z) {
     };
   };
 }
-export const useForm = <Z extends AnyZodObject>(scheme: Z) => {
+export const useForm = <Z extends AnyZodObject>(
+  scheme: Z,
+  submitHandler: (data: z.infer<Z>) => void | Promise<void>
+) => {
   type Scheme = z.infer<typeof scheme>;
+  const [submitting, setSubmitting] = useState(false);
   const [state, dispatch] = useReducer(createReducer(scheme), {});
   const [errors, setErrors] = useState<z.ZodError>();
   const handler = useCallback((key: keyof Scheme) => {
@@ -72,18 +77,23 @@ export const useForm = <Z extends AnyZodObject>(scheme: Z) => {
   );
 
   const handleSubmit = useCallback(
-    (submitHandler: (value: Scheme) => Promise<void>) =>
-      async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const result = scheme.safeParse(state);
-        if (result.success) {
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const result = scheme.safeParse(state);
+      if (result.success) {
+        setSubmitting(true);
+        try {
           await submitHandler(result.data);
-        } else {
-          setErrors(result.error);
+        } catch {
+          setSubmitting(false);
         }
-      },
-    [scheme, state]
+        setSubmitting(false);
+      } else {
+        setErrors(result.error);
+      }
+    },
+    [scheme, state, submitHandler]
   );
 
-  return { controlProps, value, setValue, handleSubmit, errors };
+  return { controlProps, value, setValue, handleSubmit, errors, submitting };
 };
