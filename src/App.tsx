@@ -6,6 +6,7 @@ import { Button, GhostButton } from "./components/Button";
 import { useCallback, useRef, useState } from "react";
 import { RouterOutput, trpc } from "./trpc";
 import { Result } from "./components/Result";
+import { GitHubIcon, TwitterIcon } from "./components/Icon";
 
 const schema = z.object({
   source: z.string(),
@@ -30,10 +31,12 @@ const examples = [
 function App() {
   const translateScoring = trpc.translateScoring.useMutation();
   const [result, setResult] = useState<RouterOutput["translateScoring"]>();
-  const { controlProps, value, setValue, handleSubmit, submitting } =
-    useForm(schema, async (data) => {
+  const { controlProps, value, setValue, handleSubmit, submitting } = useForm(
+    schema,
+    async (data) => {
       setResult(await translateScoring.mutateAsync(data));
-    });
+    }
+  );
   const translationInputRef = useRef<HTMLTextAreaElement>(null);
   const setExample = useCallback(
     (example: string) => () => {
@@ -49,9 +52,9 @@ function App() {
   }, [setValue]);
   return (
     <>
-      <article className="text-white py-12">
+      <article className="text-white py-8">
         <div className="container mx-auto">
-          <header className="mb-12 flex">
+          <header className="mb-2 flex">
             <div className="flex flex-col items-end">
               <h1 className="text-yellow-300 text-4xl font-serif leading-none">
                 Translation tester
@@ -62,7 +65,7 @@ function App() {
           <p className="text text-neutral-200"></p>
         </div>
       </article>
-      <section className="container mx-auto">
+      <section className="container mx-auto mb-2">
         <form
           className="w-full bg-neutral-800 rounded-md"
           onSubmit={handleSubmit}
@@ -159,6 +162,31 @@ function App() {
           </div>
         </form>
       </section>
+      <footer className="container mx-auto text-neutral-500">
+        <section className="flex items-center space-x-4">
+          <div>
+            made by{" "}
+            <a href="https://twitter.com/toyamarinyon" target="_blank">
+              @toyamarinyon
+            </a>
+          </div>
+          <ul className="flex space-x-3">
+            <li>
+              <a href="https://twitter.com/toyamarinyon" target="_blank">
+                <TwitterIcon />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/toyamarinyon/translation-tester"
+                target="_blank"
+              >
+                <GitHubIcon />
+              </a>
+            </li>
+          </ul>
+        </section>
+      </footer>
     </>
   );
 }
