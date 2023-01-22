@@ -4,7 +4,14 @@ Testing whether your translation is correct or incorrect by OpenAI.
 
 https://translation-tester.pages.dev/
 
-![demo.mp4]()
+## Demo
+
+Introduction of react:
+
+![React](./assets/react.gif)
+
+"Badモード"(the album by Hikaru Utada) review:
+![Bad Mode](./assets/badmode.gif)
 
 # Motivation
 
@@ -23,3 +30,6 @@ I think the best way to remember it is practice over and over again so I looked 
 
 # Contribution
 
+I'm trying to manage this product development using [Linear](https://linear.app/) so GitHub Issue is disabled.
+
+If you find a bug or have a feature request, please use a [Discussions](https://github.com/toyamarinyon/translation-tester/discussions).
