@@ -153,7 +153,7 @@ function App() {
                       leftIcon={<PlayIcon className="h-4" />}
                       loading={submitting}
                     >
-                      Test my translation
+                      {submitting ? "Please wait 30 seconds" : "Test my translation"}
                     </Button>
                   </footer>
                 </div>
