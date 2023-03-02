@@ -1,4 +1,7 @@
-import type { CreateCompletionRequest, CreateCompletionResponse } from "openai";
+import type {
+  CreateChatCompletionRequest,
+  CreateChatCompletionResponse,
+} from "openai";
 
 export class OpenAI {
   private apiKey: string;
@@ -6,9 +9,9 @@ export class OpenAI {
     this.apiKey = apiKey;
   }
   async createCompletion(
-    params: CreateCompletionRequest
-  ): Promise<CreateCompletionResponse> {
-    const response = await fetch("https://api.openai.com/v1/completions", {
+    params: CreateChatCompletionRequest
+  ): Promise<CreateChatCompletionResponse> {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,6 +19,6 @@ export class OpenAI {
       },
       body: JSON.stringify(params),
     });
-    return (await response.json()) as CreateCompletionResponse;
+    return (await response.json()) as CreateChatCompletionResponse;
   }
 }

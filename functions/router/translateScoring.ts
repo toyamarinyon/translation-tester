@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { ChatCompletionRequestMessage } from "openai";
 import { z } from "zod";
 import { t } from "../trpc";
 
@@ -36,8 +37,11 @@ export const translateScoring = t.procedure
         example: "翻訳は正しいです",
       };
     }
-    const prompt = `
-    I want you to act as a translation evaluation API.
+    const messages: ChatCompletionRequestMessage[] = [
+      {
+        role: "system",
+        content: `
+        I want you to act as a translation evaluation API.
     I will provide some translations from English to Japanese, and it will be your job to check whether they are correct or incorrect and respond as a JSON Object, which are four fields.
     The first is a "score" representing the translation score on a 3-point scale.
     The second is "summary," which represents the summary of translation quality in Japanese.
@@ -45,31 +49,35 @@ export const translateScoring = t.procedure
     The third is "misses," which represents where the errors are and explains why the translation is wrong as an array of objects with two fields: word and reason.
     The word field represents the word you missed in the translation in English, and the reason field represents the reason for the error and gives the correct translation.
     The last is "example," which represents an example translation in Japanese.
-    My first request is:
-    ###
-    {
-      "english": "${input.source}",
-      "japanese": "${input.translation}"
-    }
-    ###
-    
-    Response as JSON object:
-    `;
+        `,
+      },
+      {
+        role: "user",
+        content: `
+        ###
+        {
+          "english": "${input.source}",
+          "japanese": "${input.translation}"
+        }
+        ###
+        
+        Response as JSON object:
+        `,
+      },
+    ];
 
     const result = await ctx.openai.createCompletion({
-      model: "text-davinci-003",
-      temperature: 0.6,
-      max_tokens: 1000,
-      prompt,
+      model: 'gpt-3.5-turbo',
+      messages
     });
 
     console.log(JSON.stringify(result, null, 2));
 
-    if (result.choices[0] == null || result.choices[0].text == null) {
+    if (result.choices[0] == null || result.choices[0].message == null) {
       throw TRPCError;
     }
     const safeResult = translateScoringCompletionScheme.parse(
-      JSON.parse(result.choices[0].text)
+      JSON.parse(result.choices[0].message.content)
     );
 
     return safeResult;
