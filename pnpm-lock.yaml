@@ -17,7 +17,7 @@ specifiers:
   cloudflare-pages-plugin-trpc: ^0.2.2
   eslint: ^8.31.0
   eslint-plugin-react-hooks: ^4.6.0
-  openai: ^3.1.0
+  openai: ^3.2.1
   postcss: ^8.4.21
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -34,7 +34,7 @@ dependencies:
   '@trpc/react-query': 10.9.0_qw4miir7nnxijwjta54q3esyeq
   '@trpc/server': 10.9.0
   classnames: 2.3.2
-  openai: 3.1.0
+  openai: 3.2.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   zod: 3.20.2
@@ -51,7 +51,7 @@ devDependencies:
   eslint: 8.31.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.31.0
   postcss: 8.4.21
-  tailwindcss: 3.2.4_postcss@8.4.21
+  tailwindcss: 3.2.4
   typescript: 4.9.4
   vite: 4.0.4
   wrangler: 2.7.1
@@ -2316,8 +2316,8 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /openai/3.1.0:
-    resolution: {integrity: sha512-v5kKFH5o+8ld+t0arudj833Mgm3GcgBnbyN9946bj6u7bvel4Yg6YFz2A4HLIYDzmMjIo0s6vSG9x73kOwvdCg==}
+  /openai/3.2.1:
+    resolution: {integrity: sha512-762C9BNlJPbjjlWZi4WYK9iM2tAVAv0uUp1UmI34vb0CN5T2mjB/qM6RYBmNKMh/dN9fC+bxqPwWJZUTWW052A==}
     dependencies:
       axios: 0.26.1
       form-data: 4.0.0
@@ -2727,12 +2727,10 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.2.4_postcss@8.4.21:
+  /tailwindcss/3.2.4:
     resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
