@@ -59,7 +59,7 @@ function App() {
               <h1 className="text-yellow-300 text-4xl font-serif leading-none">
                 Translation tester
               </h1>
-              <h2 className="leading-none mr-1">powered by OpenAI</h2>
+              <h2 className="leading-none mr-1">powered by Workers AI</h2>
             </div>
           </header>
           <p className="text text-neutral-200"></p>
@@ -153,7 +153,9 @@ function App() {
                       leftIcon={<PlayIcon className="h-4" />}
                       loading={submitting}
                     >
-                      {submitting ? "Please wait 30 seconds" : "Test my translation"}
+                      {submitting
+                        ? "Please wait 30 seconds"
+                        : "Test my translation"}
                     </Button>
                   </footer>
                 </div>
