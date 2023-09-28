@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { ChatCompletionRequestMessage } from "openai";
 import { z } from "zod";
 import { t } from "../trpc";
@@ -60,24 +59,18 @@ export const translateScoring = t.procedure
           "japanese": "${input.translation}"
         }
         ###
-        
+
         Response as JSON object:
         `,
       },
     ];
 
-    const result = await ctx.openai.createCompletion({
-      model: 'gpt-3.5-turbo',
-      messages
+    const result = await ctx.ai.run("@cf/meta/llama-2-7b-chat-int8", {
+      messages,
     });
 
-    console.log(JSON.stringify(result, null, 2));
-
-    if (result.choices[0] == null || result.choices[0].message == null) {
-      throw TRPCError;
-    }
     const safeResult = translateScoringCompletionScheme.parse(
-      JSON.parse(result.choices[0].message.content)
+      JSON.parse(result.response)
     );
 
     return safeResult;
